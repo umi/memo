@@ -1,0 +1,41 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          php-fastcgi
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts the php-fastcgi
+# Description:       starts the php-fastcgi
+### END INIT INFO
+
+PHP_SCRIPT=/usr/bin/php-fastcgi
+FASTCGI_USER=www-data
+RETVAL=0
+PIDFILE=/var/run/php5-cgi.pid
+case "$1" in
+  start)
+    su - $FASTCGI_USER -c $PHP_SCRIPT
+    pidof php5-cgi > $PIDFILE
+    RETVAL=$?
+  ;;  
+  stop)
+    killall -9 php5-cgi
+    echo '' > $PIDFILE
+    RETVAL=$?
+  ;;  
+  restart)
+    killall -9 php5-cgi
+    su - $FASTCGI_USER -c $PHP_SCRIPT
+    pidof php5-cgi > $PIDFILE
+    RETVAL=$?
+  ;;  
+  *)  
+    echo "Usage: php-fastcgi {start|stop|restart}"
+    exit 1
+  ;;  
+esac
+exit $RETVAL
+console output
+
